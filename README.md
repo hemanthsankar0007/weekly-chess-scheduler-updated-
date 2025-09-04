@@ -89,7 +89,7 @@ Give a ⭐️ if this project helped you organize your chess classes!
 A beautiful and interactive weekly planner designed specifically for managing chess classes. This modern web application helps you organize your personal classes, substitute classes, and free time slots throughout the week.
 
 ## 🚀 Live Demo
-[View Live Demo](https://weekly-chess-scheduler.vercel.app/))
+[View Live Demo](https://weekly-chess-scheduler-updated.vercel.app/))
 
 ## ✨ Features
 

@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Weekly Planner</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+            animation: gradientShift 10s ease infinite;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+            50% { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.8em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            animation: slideInDown 1s ease-out;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.2em;
+            font-weight: 300;
+            margin-bottom: 20px;
+        }
+
+        .current-date {
+            background: linear-gradient(45deg, #3498db, #9b59b6);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes slideInDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .planner-wrapper {
+            overflow-x: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .planner-table {
+            width: 100%;
+            max-width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            animation: fadeInUp 1s ease-out 0.3s both;
+            table-layout: fixed;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .planner-table th, .planner-table td {
+            border: 1px solid #e0e6ed;
+            padding: 15px;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .planner-table th {
+            background: linear-gradient(45deg, #34495e, #2c3e50);
+            color: white;
+            font-weight: 600;
+            font-size: 0.95em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .planner-table th:first-child {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+        }
+
+        .day-header {
+            background: linear-gradient(45deg, #3498db, #2980b9) !important;
+            color: white;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .day-header::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .planner-table tr:hover {
+            background: rgba(52, 152, 219, 0.05);
+            transform: scale(1.01);
+            transition: all 0.3s ease;
+        }
+
+        .planner-table td {
+            background: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .planner-table td:hover {
+            background: rgba(52, 152, 219, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        select {
+            width: 100%;
+            padding: 10px 15px;
+            border: 2px solid #bdc3c7;
+            border-radius: 10px;
+            font-size: 0.9em;
+            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        select:focus {
+            border: 2px solid #3498db;
+            outline: none;
+            box-shadow: 0 0 15px rgba(52, 152, 219, 0.3);
+            transform: scale(1.05);
+        }
+
+        select:hover {
+            border-color: #7f8c8d;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        select option[value="no-class"] {
+            background: #ecf0f1;
+            color: #7f8c8d;
+        }
+
+        select option[value="personal-class"] {
+            background: #d5e8d4;
+            color: #27ae60;
+        }
+
+        select option[value="sub-class"] {
+            background: #ffe6cc;
+            color: #e67e22;
+        }
+
+        .no-class {
+            background: linear-gradient(145deg, #ecf0f1, #d5dbdb) !important;
+            border-left: 4px solid #95a5a6;
+        }
+
+        .personal-class {
+            background: linear-gradient(145deg, #d5e8d4, #a9dfbf) !important;
+            border-left: 4px solid #27ae60;
+        }
+
+        .sub-class {
+            background: linear-gradient(145deg, #ffe6cc, #f5b041) !important;
+            border-left: 4px solid #e67e22;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: linear-gradient(145deg, #fff, #f8f9fa);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            min-width: 150px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: 700;
+            color: #2c3e50;
+            display: block;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .button-container {
+            text-align: center;
+        }
+
+        #saveIndicator {
+            margin-top: 10px;
+            color: #27ae60;
+            font-size: 0.9em;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .clear-all-btn {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .clear-all-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .planner-table th, .planner-table td {
+                padding: 8px;
+                font-size: 0.8em;
+            }
+            
+            .stats {
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-calendar-week"></i> My Weekly Planner</h1>
+            <p class="subtitle">Plan your chess classes efficiently</p>
+            <div class="current-date" id="currentDate"></div>
+        </div>
+        
+        <div class="planner-wrapper">
+            <table class="planner-table">
+                <thead>
+                    <tr>
+                        <th>Day/Time</th>
+                        <th><i class="far fa-clock"></i> 4:00-4:45 AM</th>
+                        <th><i class="far fa-clock"></i> 4:45-5:30 AM</th>
+                        <th><i class="far fa-clock"></i> 5:30-6:15 AM</th>
+                        <th><i class="far fa-clock"></i> 6:15-7:00 AM</th>
+                        <th><i class="far fa-clock"></i> 7:15-8:00 AM</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th class="day-header">Monday</th>
+                        <td><select aria-label="Monday 4:00-4:45 AM class selection" onchange="updateCellStyle(this)">
+                            <option value="no-class">No class</option>
+                            <option value="personal-class">Personal class</option>
+                            <option value="sub-class">Sub class</option>
+                        </select></td>
+                        <td><select aria-label="Monday 4:45-5:30 AM class selection" onchange="updateCellStyle(this)">
+                            <option value="no-class">No class</option>
+                            <option value="personal-class">Personal class</option>
+                            <option value="sub-class">Sub class</option>
+                        </select></td>
+                        <td><select aria-label="Monday 5:30-6:15 AM class selection" onchange="updateCellStyle(this)">
+                            <option value="no-class">No class</option>
+                            <option value="personal-class">Personal class</option>
+                            <option value="sub-class">Sub class</option>
+                        </select></td>
+                        <td><select aria-label="Monday 6:15-7:00 AM class selection" onchange="updateCellStyle(this)">
+                            <option value="no-class">No class</option>
+                            <option value="personal-class">Personal class</option>
+                            <option value="sub-class">Sub class</option>
+                        </select></td>
+                        <td><select aria-label="Monday 7:15-8:00 AM class selection" onchange="updateCellStyle(this)">
+                            <option value="no-class">No class</option>
+                            <option value="personal-class">Personal class</option>
+                            <option value="sub-class">Sub class</option>
+                        </select></td>
+                    </tr>
+                    <tr>
+                        <th class="day-header">Tuesday</th>
+                        <td><select aria-label="Tuesday 4:00-4:45 AM class selection" onchange="updateCellStyle(this)">
+                            <option value="no-class">No class</option>
+                            <option value="personal-class">Personal class</option>
+                            <option value="sub-class">Sub class</option>
+                        </select></td>
+                        <td><select aria-label="Tuesday 4:45-5:30 AM class selection" onchange="updateCellStyle(this)">
+                            <option value="no-class">No class</option>
+                            <option value="personal-class">Personal class</option>
+                            <option value="sub-class">Sub class</option>
+                        </select></td>
+                        <td><select aria-label="Tuesday 5:30-6:15 AM class selection" onchange="updateCellStyle(this)">
+                            <option value="no-class">No class</option>
+                            <option value="personal-class">Personal class</option>
+                            <option value="sub-class">Sub class</option>
+                        </select></td>
+                        <td><select aria-label="Tuesday 6:15-7:00 AM class selection" onchange="updateCellStyle(this)">
+                            <option value="no-class">No class</option>
+                            <option value="personal-class">Personal class</option>
+                            <option value="sub-class">Sub class</option>
+                        </select></td>
+                        <td><select aria-label="Tuesday 7:15-8:00 AM class selection" onchange="updateCellStyle(this)">
+                            <option value="no-class">No class</option>
+                            <option value="personal-class">Personal class</option>
+                            <option value="sub-class">Sub class</option>
+                        </select></td>
+                    </tr>
+                    <tr>
+                        <th class="day-header">Wednesday</th>
+                        <td><select aria-label="Wednesday 4:00-4:45 AM class selection" onchange="updateCellStyle(this)">
+                            <option value="no-class">No class</option>
+                            <option value="personal-class">Personal class</option>
+                            <option value="sub-class">Sub class</option>
+                        </select></td>
+                        <td><select aria-label="Wednesday 4:45-5:30 AM class selection" onchange="updateCellStyle(this)">
+                            <option value="no-class">No class</option>
+                            <option value="personal-class">Personal class</option>
+                            <option value="sub-class">Sub class</option>
+                        </select></td>
+                        <td><select aria-label="Wednesday 5:30-6:15 AM class selection" onchange="updateCellStyle(this)">
+                            <option value="no-class">No class</option>
+                            <option value="personal-class">Personal class</option>
+                            <option value="sub-class">Sub class</option>
+                        </select></td>
+                        <td><select aria-label="Wednesday 6:15-7:00 AM class selection" onchange="updateCellStyle(this)">
+                            <option value="no-class">No class</option>
+                            <option value="personal-class">Personal class</option>
+                            <option value="sub-class">Sub class</option>
+                        </select></td>
+                        <td><select aria-label="Wednesday 7:15-8:00 AM class selection" onchange="updateCellStyle(this)">
+                            <option value="no-class">No class</option>
+                            <option value="personal-class">Personal class</option>
+                            <option value="sub-class">Sub class</option>
+                        </select></td>
+                    </tr>
+                    <tr>
+                        <th class="day-header">Thursday</th>
+                        <td><select aria-label="Thursday 4:00-4:45 AM class selection" onchange="updateCellStyle(this)">
+                            <option value="no-class">No class</option>
+                            <option value="personal-class">Personal class</option>
+                            <option value="sub-class">Sub class</option>
+                        </select></td>
+                        <td><select aria-label="Thursday 4:45-5:30 AM class selection" onchange="updateCellStyle(this)">
+                            <option value="no-class">No class</option>
+                            <option value="personal-class">Personal class</option>
+                            <option value="sub-class">Sub class</option>
+                        </select></td>
+                        <td><select aria-label="Thursday 5:30-6:15 AM class selection" onchange="updateCellStyle(this)">
+                            <option value="no-class">No class</option>
+                            <option value="personal-class">Personal class</option>
+                            <option value="sub-class">Sub class</option>
+                        </select></td>
+                        <td><select aria-label="Thursday 6:15-7:00 AM class selection" onchange="updateCellStyle(this)">
+                            <option value="no-class">No class</option>
+                            <option value="personal-class">Personal class</option>
+                            <option value="sub-class">Sub class</option>
+                        </select></td>
+                        <td><select aria-label="Thursday 7:15-8:00 AM class selection" onchange="updateCellStyle(this)">
+                            <option value="no-class">No class</option>
+                            <option value="personal-class">Personal class</option>
+                            <option value="sub-class">Sub class</option>
+                        </select></td>
+                    </tr>
+                    <tr>
+                        <th class="day-header">Friday</th>
+                        <td><select aria-label="Friday 4:00-4:45 AM class selection" onchange="updateCellStyle(this)">
+                            <option value="no-class">No class</option>
+                            <option value="personal-class">Personal class</option>
+                            <option value="sub-class">Sub class</option>
+                        </select></td>
+                        <td><select aria-label="Friday 4:45-5:30 AM class selection" onchange="updateCellStyle(this)">
+                            <option value="no-class">No class</option>
+                            <option value="personal-class">Personal class</option>
+                            <option value="sub-class">Sub class</option>
+                        </select></td>
+                        <td><select aria-label="Friday 5:30-6:15 AM class selection" onchange="updateCellStyle(this)">
+                            <option value="no-class">No class</option>
+                            <option value="personal-class">Personal class</option>
+                            <option value="sub-class">Sub class</option>
+                        </select></td>
+                        <td><select aria-label="Friday 6:15-7:00 AM class selection" onchange="updateCellStyle(this)">
+                            <option value="no-class">No class</option>
+                            <option value="personal-class">Personal class</option>
+                            <option value="sub-class">Sub class</option>
+                        </select></td>
+                        <td><select aria-label="Friday 7:15-8:00 AM class selection" onchange="updateCellStyle(this)">
+                            <option value="no-class">No class</option>
+                            <option value="personal-class">Personal class</option>
+                            <option value="sub-class">Sub class</option>
+                        </select></td>
+                    </tr>
+                    <tr>
+                        <th class="day-header">Saturday</th>
+                        <td><select aria-label="Saturday 4:00-4:45 AM class selection" onchange="updateCellStyle(this)">
+                            <option value="no-class">No class</option>
+                            <option value="personal-class">Personal class</option>
+                            <option value="sub-class">Sub class</option>
+                        </select></td>
+                        <td><select aria-label="Saturday 4:45-5:30 AM class selection" onchange="updateCellStyle(this)">
+                            <option value="no-class">No class</option>
+                            <option value="personal-class">Personal class</option>
+                            <option value="sub-class">Sub class</option>
+                        </select></td>
+                        <td><select aria-label="Saturday 5:30-6:15 AM class selection" onchange="updateCellStyle(this)">
+                            <option value="no-class">No class</option>
+                            <option value="personal-class">Personal class</option>
+                            <option value="sub-class">Sub class</option>
+                        </select></td>
+                        <td><select aria-label="Saturday 6:15-7:00 AM class selection" onchange="updateCellStyle(this)">
+                            <option value="no-class">No class</option>
+                            <option value="personal-class">Personal class</option>
+                            <option value="sub-class">Sub class</option>
+                        </select></td>
+                        <td><select aria-label="Saturday 7:15-8:00 AM class selection" onchange="updateCellStyle(this)">
+                            <option value="no-class">No class</option>
+                            <option value="personal-class">Personal class</option>
+                            <option value="sub-class">Sub class</option>
+                        </select></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <span class="stat-number" id="personalCount">0</span>
+                <div class="stat-label"><i class="fas fa-user"></i> Personal Classes</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="subCount">0</span>
+                <div class="stat-label"><i class="fas fa-users"></i> Sub Classes</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="freeCount">30</span>
+                <div class="stat-label"><i class="fas fa-coffee"></i> Free Slots</div>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button class="clear-all-btn" onclick="clearAllSelections()">
+                <i class="fas fa-trash"></i> Clear All
+            </button>
+            <div id="saveIndicator">
+                <i class="fas fa-check"></i> Schedule saved automatically
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set current date
+        function setCurrentDate() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', options);
+        }
+
+        // Update cell styling based on selection
+        function updateCellStyle(select) {
+            const cell = select.parentElement;
+            const value = select.value;
+            
+            // Remove existing classes
+            cell.classList.remove('no-class', 'personal-class', 'sub-class');
+            
+            // Add new class based on selection
+            cell.classList.add(value);
+            
+            // Add animation effect
+            cell.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                cell.style.transform = 'scale(1)';
+            }, 200);
+            
+            updateStats();
+            saveSchedule(); // Save to localStorage
+        }
+
+        // Save schedule to localStorage
+        function saveSchedule() {
+            const selects = document.querySelectorAll('select');
+            const schedule = {};
+            selects.forEach((select, index) => {
+                schedule[index] = select.value;
+            });
+            localStorage.setItem('weeklyChessSchedule', JSON.stringify(schedule));
+            
+            // Show save indicator
+            const indicator = document.getElementById('saveIndicator');
+            indicator.style.opacity = '1';
+            setTimeout(() => {
+                indicator.style.opacity = '0';
+            }, 2000);
+        }
+
+        // Load schedule from localStorage
+        function loadSchedule() {
+            const saved = localStorage.getItem('weeklyChessSchedule');
+            if (saved) {
+                const schedule = JSON.parse(saved);
+                const selects = document.querySelectorAll('select');
+                selects.forEach((select, index) => {
+                    if (schedule[index]) {
+                        select.value = schedule[index];
+                        updateCellStyle(select);
+                    }
+                });
+            }
+        }
+
+        // Update statistics
+        function updateStats() {
+            const selects = document.querySelectorAll('select');
+            let personalCount = 0;
+            let subCount = 0;
+            let freeCount = 0;
+            
+            selects.forEach(select => {
+                switch(select.value) {
+                    case 'personal-class':
+                        personalCount++;
+                        break;
+                    case 'sub-class':
+                        subCount++;
+                        break;
+                    case 'no-class':
+                        freeCount++;
+                        break;
+                }
+            });
+            
+            document.getElementById('personalCount').textContent = personalCount;
+            document.getElementById('subCount').textContent = subCount;
+            document.getElementById('freeCount').textContent = freeCount;
+            
+            // Animate numbers
+            animateNumber('personalCount');
+            animateNumber('subCount');
+            animateNumber('freeCount');
+        }
+
+        // Animate number changes
+        function animateNumber(elementId) {
+            const element = document.getElementById(elementId);
+            element.style.transform = 'scale(1.2)';
+            element.style.color = '#3498db';
+            setTimeout(() => {
+                element.style.transform = 'scale(1)';
+                element.style.color = '#2c3e50';
+            }, 300);
+        }
+
+        // Clear all selections
+        function clearAllSelections() {
+            if (confirm('Are you sure you want to clear all selections?')) {
+                const selects = document.querySelectorAll('select');
+                selects.forEach(select => {
+                    select.value = 'no-class';
+                    updateCellStyle(select);
+                });
+                localStorage.removeItem('weeklyChessSchedule'); // Clear saved data
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            setCurrentDate();
+            loadSchedule(); // Load saved schedule first
+            updateStats();
+            
+            // Initialize cell styles for any unsaved cells
+            const selects = document.querySelectorAll('select');
+            selects.forEach(select => {
+                if (!select.value || select.value === '') {
+                    select.value = 'no-class';
+                }
+                updateCellStyle(select);
+            });
+        });
+
+        // Add some interactive effects
+        document.querySelectorAll('select').forEach(select => {
+            select.addEventListener('mouseenter', function() {
+                this.style.boxShadow = '0 4px 15px rgba(52, 152, 219, 0.3)';
+            });
+            
+            select.addEventListener('mouseleave', function() {
+                this.style.boxShadow = '';
+            });
+        });
+    </script>
+</body>
+</html>
